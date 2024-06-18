@@ -1,0 +1,5 @@
+---
+- name: install libcomm14cux
+  copy:
+    src: libcomm14cux/
+    dest: /

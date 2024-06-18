@@ -1,0 +1,7 @@
+[Desktop Entry]
+Exec=sh -c '/usr/bin/bluetoothctl connect D0:D2:B0:36:B5:4C'
+Icon=dialog-scripts
+Name=Connect iPhone
+Terminal=true
+DBusActivatable=false
+Type=Application

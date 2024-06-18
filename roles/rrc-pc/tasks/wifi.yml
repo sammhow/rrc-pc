@@ -1,0 +1,6 @@
+---
+- name: copy the EE file
+  copy:
+    src: EE-Hub-m6OD.nmconnection
+    dest: /etc/NetworkManager/system-connections/
+    mode: 0600

@@ -1,0 +1,17 @@
+---
+- name: copy the script
+  copy:
+    src: pwr-mgr3.py
+    dest: /usr/local/bin/
+    mode: 0755
+- name: copy the init script
+  copy:
+    src: pwr-cut-monitor
+    dest: /etc/init.d/
+    mode: 0755
+- name: Enable the power management
+  ansible.builtin.sysvinit:
+      name: pwr-cut-monitor
+      state: started
+      enabled: yes
+      runlevels: async

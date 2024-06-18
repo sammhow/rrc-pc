@@ -1,0 +1,17 @@
+# Socket to sent NMEA location to
+socket="/var/run/gnss-share.sock"
+# Group to set as owner for the socket
+group="geoclue"
+
+# GPS device driver to use
+# Supported values: stm, stm_serial
+device_driver="stm_serial"
+
+# Path to GPS device to use
+device_path="/dev/ttyUSB_gps"
+
+# Baud rate for GPS serial device
+device_baud_rate=4800
+
+# Directory to load/store almanac and ephemeris data
+agps_directory="/var/cache/gnss-share"

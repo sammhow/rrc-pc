@@ -1,0 +1,6 @@
+---
+- name: copy the temp sensor
+  copy:
+    src: temp-sensor.py
+    dest: /usr/local/bin/
+    mode: 0766

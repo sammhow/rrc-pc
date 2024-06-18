@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Name=RoverGauge
+Name[de]=RoverGauge
+Name[fr]=RoverGauge
+Comment=Rusty Details
+Exec=rovergauge
+Icon=/home/user/Pictures/rovergauge
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GTK;Utility;
+GenericName=RoverGauge
+GenericName[de]=RoverGauge
+X-Nemo-Application-Type=no-invoker

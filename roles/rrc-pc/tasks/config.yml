@@ -1,0 +1,70 @@
+---
+- name: copy gnss-config
+  copy:
+    src: gnss-config
+    dest: /etc/gnss-share.conf
+
+- name: and enable gnss
+  command:
+    cmd: "rc-update add gnss-share"
+
+- name: geoclue config
+  copy:
+    src: geoclue-config
+    dest: /etc/geoclue/geoclue.conf
+
+- name: pulse-bluetooth
+  copy:
+    src: postmarketos.pa
+    dest: /etc/pulse/default.pa.d/postmarketos.pa
+
+- name: bluetooth
+  copy:
+    src: bt-main
+    dest: /etc/bluetooth/main.conf
+
+- name: udev rules
+  copy:
+    src: udev-usb
+    dest: /etc/udev/rules.d/99-usb-serial.rules
+
+- name: doesktop image
+  copy:
+    src: rustywallpaper.jpeg
+    dest: /home/user/Pictures/rustywallpaper.jpeg
+
+- name: desktop layout
+  copy:
+    src: MyDesktop.json
+    dest:  /home/user/Documents/MyDesktopLayout.json
+
+- name: symlink modprobe for waydroid
+  file:
+    src: /sbin/modprobe
+    dest: /usr/bin/modprobe
+    state: link
+
+#- name: copy user config
+#  copy:
+#    src: user-config
+#    dest: /home/user/.config
+
+- name: copy bt autostart
+  copy:
+    src: btstart.desktop
+    dest: /home/user/.config/autostart/
+
+- name: copy env dmp script
+  copy:
+    src: capture_env.sh
+    dest: /usr/local/bin
+
+- name: and the autostart 
+  copy:
+    src: envdump.desktop
+    dest: /home/user/.config/autostart/
+
+- name: disable wifi powersave
+  copy:
+    src: default-wifi-powersave-on.conf
+    dest: /etc/NetworkManager/conf.d/

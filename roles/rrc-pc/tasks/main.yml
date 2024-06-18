@@ -1,0 +1,8 @@
+---
+# tasks file for rusty-pc
+- include_tasks: init-config.yml
+- include_tasks: config.yml
+#- include_tasks: wifi.yml
+- include_tasks: libcomm14cux.yml
+- include_tasks: rovergauge.yml
+- include_tasks: pwr-mgr.yml

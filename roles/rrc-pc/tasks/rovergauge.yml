@@ -1,0 +1,14 @@
+---
+
+- name: icon
+  copy:
+    src: rovergauge/rovergauge.ico
+    dest: /home/user/Pictures/rovergauge.ico
+
+- name: copy rovergauge
+  copy: 
+    src: rovergauge/usr
+    dest: /
+
+- name: make it executable
+  file: dest=/usr/bin/rovergauge mode=a+x

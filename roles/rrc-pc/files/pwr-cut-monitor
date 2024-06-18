@@ -1,0 +1,7 @@
+#!/sbin/openrc-run
+
+name="Pwr-Cut_Monitor"
+command="/usr/local/bin/pwr-mgr2.py"
+pidfile="/run/pwr-cut-monitor.pid"
+command_background=true
+

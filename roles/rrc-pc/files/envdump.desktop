@@ -1,0 +1,7 @@
+[Desktop Entry]
+Exec=sh -c '/usr/local/bin/capture_env.sh'
+Icon=dialog-scripts
+Name=Dump Env
+Terminal=true
+DBusActivatable=false
+Type=Application

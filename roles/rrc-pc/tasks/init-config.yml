@@ -1,0 +1,25 @@
+---
+- name: create a new runlevel directory
+  file:
+    path: /etc/runlevels/async
+    state: directory
+
+- name: and now the runlevel
+  command:
+    cmd: rc-update add -s default async
+
+- name: disable slow services
+  shell: |
+    rc-update del networking boot
+    rc-update del wpa_supplicant boot
+    rc-update del ntpd boot
+    rc-update del hwclock boot
+    rc-update del iio-sensor-proxy
+    rc-update del modemmanager
+    rc-update del sleep-inhibitor
+
+- name: and now move needed ones to the new runlevel
+  shell: |
+    rc-update add networking async
+    rc-update add wpa_supplicant async
+    rc-update add ntpd async    
