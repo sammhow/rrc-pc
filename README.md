@@ -1,4 +1,4 @@
-# rrc-pc
+# Range Rover Classic PC
 
 This is the basic setup of a car pc for a Range Rover Classic
 
@@ -10,6 +10,7 @@ Raspberry Pi
 - GPS receiver
 - USB sound card
 - Programmable relay to auto power off the PC
+- 2x 12v-5v converters - one for RPi power the other to trigger power-off counter
 
 Optional hardware
 - TTL serial cable for RoverGauge
@@ -28,3 +29,5 @@ Build the RPi4 PMOS image with Plasma Mobile and these optional packages
 ```
  pure-maps,lollypop,sof-firmware,pipewire,pipewire-pulse,wireplumber,geoclue,gnss-share-geoclue,gnss-share,kid3,pipewire-spa-bluez,gpsd-clients,py3-rpigpio,gnome-shortwave,raspberrypi-userland,py3-libgpiod,wireless-tools,iw,welle-io,qt5-qttools,konsole
 ```
+
+Note that this has pre-built versions of RoverGauge and libcomm14cux
