@@ -1,3 +1,3 @@
 SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", ENV{ID_SERIAL}=="Prolific_Technology_Inc._USB-Serial_Controller_D", SYMLINK+="ttyUSB_gps"
 #SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", ENV{ID_SERIAL}=="Prolific_Technology_Inc._USB-Serial_Controller", SYMLINK+="ttyUSB_ser"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ENV{ID_SERIAL}=="FTDI_6001_FT596YTZ", SYMLINK+="ttyUSB_ser"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ENV{ID_SERIAL}=="FTDI_6001_FT596YTZ", SYMLINK+="ttyUSB_ser", MODE="0666"
