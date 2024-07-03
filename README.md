@@ -4,12 +4,14 @@ This is the basic setup of a car pc for a Range Rover Classic
 
 Components 
 
-Raspberry Pi
-- Preferably a 5 with an NVMe hat for improved boot time
+- Raspberry Pi
+	- Preferably a 5 with an NVMe hat for improved boot time and general performance
 - 7in Touch screen
 - GPS receiver
+	- I used a GlobalSat BU-353-S4 USB GPS Receiver 
 - USB sound card
 - Programmable relay to auto power off the PC
+	- https://timers.shop/Multi-Functional-6V-28V-Time-Delay-Relay-Timer--10-amp-V8_p_79.html
 - 2x 12v-5v converters - one for RPi power the other to trigger power-off counter
 
 Optional hardware
@@ -31,3 +33,5 @@ Build the RPi4 PMOS image with Plasma Mobile and these optional packages
 ```
 
 Note that this has pre-built versions of RoverGauge and libcomm14cux
+https://github.com/colinbourassa/rovergauge
+https://github.com/colinbourassa/libcomm14cux
