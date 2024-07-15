@@ -2,6 +2,13 @@
 
 This is the basic setup of a car pc for a Range Rover Classic
 
+I used PostmarketOS with PlasmaMobile because it gives the best experience for a touch interface that I have tried.
+
+The system has a small Python script which monitors a GPIO pin to detect when the ignition is switched off. 
+Once the ignition is switched off, the counter immediately blanks the screen, then waits 9 minutes - enough time to pay for petrol etc. - before soft powering off the RPi. 
+
+After 10 minutes the programmable relay cuts power, saving the battery.
+
 Components 
 
 - Raspberry Pi
@@ -12,7 +19,8 @@ Components
 - USB sound card
 - Programmable relay to auto power off the PC
 	- https://timers.shop/Multi-Functional-6V-28V-Time-Delay-Relay-Timer--10-amp-V8_p_79.html
-- 2x 12v-5v converters - one for RPi power the other to trigger power-off counter
+- 2x 12v-5v converters - one for RPi power the other for a powered USB hub
+- 12v-3v converter to trigger power-off counter.
 
 Optional hardware
 - TTL serial cable for RoverGauge
