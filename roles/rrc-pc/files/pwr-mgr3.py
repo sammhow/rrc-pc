@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import gpiod
+import RPi.GPIO as GPIO
 import time
 import os
 import subprocess
@@ -16,8 +16,7 @@ with open(log_file_path, 'w'):
 logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(asctime)s %(message)s')
 
 # Define the GPIO pin
-gpio_chip = "/dev/gpiochip0"
-gpio_line_offset = 17
+gpio_pin = 17
 
 # Specify the user
 user = "user"
@@ -40,7 +39,7 @@ def power_cut_callback():
 
     for _ in range(540):  # 9 minutes (540 * 1 second)
         time.sleep(1)  # Sleep for 1 second
-        if line.get_value() == 1:
+        if GPIO.input(gpio_pin) == 1:
             logging.info("Power restored during waiting period. Canceling shutdown.")
             return
 
@@ -59,29 +58,36 @@ def power_restore_callback():
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to turn on the screen: {e}")
 
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(gpio_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+# Initialize previous state
+prev_state = GPIO.input(gpio_pin)
+logging.info(f"Initial GPIO state: {prev_state}")
+
+logging.info("Waiting for power cut or restore...")
+
 try:
-    with gpiod.Chip(gpio_chip) as chip:
-        line = chip.get_line(gpio_line_offset)
-        line.request(consumer="power_cut", type=gpiod.LINE_REQ_EV_BOTH_EDGES)
-        
-        # Initialize previous state
-        prev_state = line.get_value()
-        logging.info(f"Initial GPIO state: {prev_state}")
-        
-        logging.info("Waiting for power cut or restore...")
-        while True:
-            time.sleep(0.1)  # Sleep for a short time to avoid busy loop
-            current_state = line.get_value()
-            if current_state != prev_state:  # Check if state has changed
-                logging.info(f"GPIO state changed: {current_state}")
-                if current_state == 0:
-                    power_cut_callback()
-                else:
-                    power_restore_callback()
-                prev_state = current_state  # Update previous state
+    while True:
+        # Read the state of the pin
+        current_state = GPIO.input(gpio_pin)
+        if current_state != prev_state:
+            logging.info(f"GPIO state changed: {current_state}")
+            if current_state == 0:
+                power_cut_callback()
+            else:
+                power_restore_callback()
+            prev_state = current_state  # Update previous state
+        # Wait for a short period before checking again
+        time.sleep(1)
 
 except KeyboardInterrupt:
     logging.info("Script terminated by user.")
 except Exception as e:
     logging.error(f"An error occurred: {e}")
+
+finally:
+    GPIO.cleanup()
+    logging.info("GPIO cleaned up and script terminated.")
 
