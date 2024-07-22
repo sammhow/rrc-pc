@@ -22,9 +22,14 @@ Components
 - 2x 12v-5v converters - one for RPi power the other for a powered USB hub
 - 12v-3v converter to trigger power-off counter.
 
+Recommended
+
+- Physical switch to be able to reboot RPi if needed
+
 Optional hardware
 - TTL serial cable for RoverGauge
 - DVB receiver for DAB radio
+- Temperature probe for outside and or inside temps
 
 Software
 - Lollypop - off line media
