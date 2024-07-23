@@ -13,6 +13,11 @@
     src: geoclue-config
     dest: /etc/geoclue/geoclue.conf
 
+- name: create dir for blutooth config
+  file:
+    path: /etc/pulse/default.pa.d
+    state: directory
+
 - name: pulse-bluetooth
   copy:
     src: postmarketos.pa
