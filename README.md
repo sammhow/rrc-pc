@@ -28,23 +28,38 @@ Recommended
 
 Optional hardware
 - TTL serial cable for RoverGauge
-- DVB receiver for DAB radio
+- DVB receiver for DAB radio - note that welle.io is not avaiable in the default repos.
 - Temperature probe for outside and or inside temps
 
 Software
 - Lollypop - off line media
 - Pure-Maps - off line and online mapping/satnav
 - Gnome-Shortwave - Internet radio
-- Welle-io - DAB radio
 
 Optional software
 - Waydroid - for Amazon Music or whatever else.
+	- Instructions here https://wiki.postmarketos.org/wiki/Waydroid
+	- You also need to add ```psi=1``` to cmdline.txt 
+	- I would suggest downloading F-Droid and from there using Aurora Store
+- To view output from the temperature sensor I used the 'Command Output [Plasma 6]' Widget
+	- The command is `echo "Outside Temp:" ; echo $(/usr/local/bin/temp-sensor.py)"
+	- And run it every 5000ms or so
+	- You will also need to add ```w1-gpio``` and ```w1-therm``` to ```/etc/modules```
+        - And ```dtoverlay=w1-gpio,gpiopin=27``` to ```usercfg.txt```
 
 Build the RPi4 PMOS image with Plasma Mobile and these optional packages
 ```
- pure-maps,lollypop,sof-firmware,pipewire,pipewire-pulse,wireplumber,geoclue,gnss-share-geoclue,gnss-share,kid3,pipewire-spa-bluez,gpsd-clients,py3-rpigpio,gnome-shortwave,raspberrypi-userland,py3-libgpiod,wireless-tools,iw,welle-io,qt5-qttools,konsole
+ pure-maps,lollypop,sof-firmware,pipewire,pipewire-pulse,wireplumber,geoclue,gnss-share-geoclue,gnss-share,kid3,pipewire-spa-bluez,gpsd-clients,py3-rpigpio,gnome-shortwave,raspberrypi-userland,py3-libgpiod,wireless-tools,iw,qt5-qttools,konsole
 ```
 
 Note that this has pre-built versions of RoverGauge and libcomm14cux
 https://github.com/colinbourassa/rovergauge
 https://github.com/colinbourassa/libcomm14cux
+
+Notes
+
+- There is an issue with permissions on WiFi connections, if it doesn't connect at boot time -
+	- Edit /etc/NetworkManager/system-connections/[your wifi].nmconnection and remove the permissions
+		- Before ```permissions=user:user:;```
+		- After ```permissions=```
+- If using a Raspberry Pi 4 I would suggest overclocking it
