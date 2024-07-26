@@ -9,6 +9,8 @@ Once the ignition is switched off, the counter immediately blanks the screen, th
 
 After 10 minutes the programmable relay cuts power, saving the battery.
 
+***See the wiki for more details, but basically -***
+
 Components 
 
 - Raspberry Pi
