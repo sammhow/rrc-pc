@@ -1,6 +1,6 @@
-# Range Rover Classic PC
+# Range Rover Classic CarPC
 
-This is the basic setup of a car pc for a Range Rover Classic
+This is the basic setup of a car pc - I built it for a Range Rover Classic
 
 I used PostmarketOS with PlasmaMobile because it gives the best experience for a touch interface that I have tried.
 
