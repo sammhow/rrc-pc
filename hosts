@@ -1,5 +1,5 @@
 all:
   hosts:
     rustypc:
-      ansible_host: 172.16.5.224
+      ansible_host: 172.16.5.214
       ansible_user: user

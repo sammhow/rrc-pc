@@ -4,6 +4,11 @@
     src: gnss-config
     dest: /etc/gnss-share.conf
 
+- name: force gps to NMEA
+  copy:
+    src: rc_gnss-share
+    dest: /etc/init.d/gnss-share
+
 - name: and enable gnss
   command:
     cmd: "rc-update add gnss-share"
