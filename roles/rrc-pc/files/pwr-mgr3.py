@@ -55,6 +55,9 @@ def power_restore_callback():
     try:
         # Wake up the screen
         subprocess.run(turn_on_screen_cmd, shell=True, check=True)
+        # Unlock the session
+        subprocess.run("loginctl unlock-session c1", shell=True, check=True)
+
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to turn on the screen: {e}")
 

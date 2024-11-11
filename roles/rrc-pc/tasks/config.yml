@@ -1,4 +1,9 @@
 ---
+- name: enable needed modules
+  copy:
+    src: modules
+    dest: /etc/modules
+
 - name: copy gnss-config
   copy:
     src: gnss-config
