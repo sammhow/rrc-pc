@@ -47,6 +47,10 @@
   copy:
     src: rustywallpaper.jpeg
     dest: /home/user/Pictures/rustywallpaper.jpeg
+- name: doesktop image 2
+  copy:
+    src: rustywallpaper2.jpeg
+    dest: /home/user/Pictures/rustywallpaper2.jpeg
 
 - name: desktop layout
   copy:
