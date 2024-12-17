@@ -1,0 +1,17 @@
+---
+- name: copy the script
+  copy:
+    src: set_gps_time.py
+    dest: /usr/local/bin/
+    mode: 0755
+- name: copy the init script
+  copy:
+    src: gps-ntp
+    dest: /etc/init.d/
+    mode: 0755
+- name: Enable the power management
+  ansible.builtin.sysvinit:
+      name: gps-ntp
+      state: started
+      enabled: yes
+      runlevels: default

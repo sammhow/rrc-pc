@@ -1,0 +1,35 @@
+#!/sbin/openrc-run
+
+# Description: Synchronize system time using GPS data at boot
+
+command="/usr/local/bin/set_gps_time.py"
+command_args=">> /var/log/gps-time-sync.log 2>&1"
+command_background="no"
+command_user="root"
+
+# Dependencies: Ensure the GNSS-share socket and chronyd are available
+depend() {
+    need chronyd
+    need gnss-share
+    after gnss-share
+}
+
+start_pre() {
+    ebegin "Waiting for GNSS-share socket..."
+    while [ ! -S /var/run/gnss-share.sock ]; do
+        sleep 1
+    done
+    eend $?
+}
+
+start() {
+    ebegin "Starting GPS Time Synchronization"
+    start-stop-daemon --start --exec $command -- $command_args
+    eend $?
+}
+
+stop() {
+    # No action needed since the script runs once
+    return 0
+}
+
