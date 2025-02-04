@@ -4,6 +4,7 @@ import time
 import os
 import subprocess
 import logging
+import signal
 
 # Path to the log file
 log_file_path = '/var/log/power_cut.log'
@@ -16,7 +17,7 @@ with open(log_file_path, 'w'):
 logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(asctime)s %(message)s')
 
 # Define the GPIO pin
-gpio_pin = 17
+gpio_pin = 22
 
 # Specify the user
 user = "user"
@@ -27,6 +28,12 @@ dbus_send_path = "/usr/bin/dbus-send"  # Adjust this path if needed
 # Command templates
 turn_off_screen_cmd = f". /tmp/user_environment ; sudo -E -u {user} {dbus_send_path} --session --type=method_call --dest=org.kde.kglobalaccel /component/org_kde_powerdevil org.kde.kglobalaccel.Component.invokeShortcut string:'Turn Off Screen'"
 turn_on_screen_cmd = f". /tmp/user_environment ; sudo -E -u {user} {dbus_send_path} --session --type=method_call --dest=local.org_kde_powerdevil /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup"
+
+def cleanup_and_exit(signum, frame):
+    print("Received signal:", signum)
+    GPIO.cleanup()
+    print("GPIO cleaned up, exiting.")
+    sys.exit(0)
 
 # Callback function for power cut event
 def power_cut_callback():
@@ -65,6 +72,10 @@ def power_restore_callback():
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(gpio_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+# Register signal handlers for SIGTERM and SIGINT
+signal.signal(signal.SIGTERM, cleanup_and_exit)
+signal.signal(signal.SIGINT, cleanup_and_exit)
+
 # Initialize previous state
 prev_state = GPIO.input(gpio_pin)
 logging.info(f"Initial GPIO state: {prev_state}")
@@ -86,7 +97,7 @@ try:
         time.sleep(1)
 
 except KeyboardInterrupt:
-    logging.info("Script terminated by user.")
+    cleanup_and_exit(signal.SIGINT, None)
 except Exception as e:
     logging.error(f"An error occurred: {e}")
 
