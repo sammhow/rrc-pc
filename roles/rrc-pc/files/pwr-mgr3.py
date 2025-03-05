@@ -1,107 +1,103 @@
-#!/usr/bin/python
-import RPi.GPIO as GPIO
-import time
-import os
+#!/usr/bin/python3
+# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-FileCopyrightText: 2023 Kent Gibson <warthog618@gmail.com>
+
+import gpiod
+from datetime import timedelta
+from gpiod.line import Bias, Edge
 import subprocess
 import logging
-import signal
+import time
+import threading
 
-# Path to the log file
-log_file_path = '/var/log/power_cut.log'
-
+# Setup logging
+log_file_path = "/var/log/power_cut.log"
 # Clear the log file
 with open(log_file_path, 'w'):
     pass
+logging.basicConfig(filename=log_file_path, level=logging.INFO, format="%(asctime)s %(message)s")
 
-# Setup logging
-logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(asctime)s %(message)s')
-
-# Define the GPIO pin
-gpio_pin = 22
-
-# Specify the user
+# Define your user and dbus-send path
 user = "user"
+dbus_send_path = "/usr/bin/dbus-send"
 
-# Path to dbus-send
-dbus_send_path = "/usr/bin/dbus-send"  # Adjust this path if needed
-
-# Command templates
+# Define commands to turn the screen off and on
 turn_off_screen_cmd = f". /tmp/user_environment ; sudo -E -u {user} {dbus_send_path} --session --type=method_call --dest=org.kde.kglobalaccel /component/org_kde_powerdevil org.kde.kglobalaccel.Component.invokeShortcut string:'Turn Off Screen'"
 turn_on_screen_cmd = f". /tmp/user_environment ; sudo -E -u {user} {dbus_send_path} --session --type=method_call --dest=local.org_kde_powerdevil /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup"
 
-def cleanup_and_exit(signum, frame):
-    print("Received signal:", signum)
-    GPIO.cleanup()
-    print("GPIO cleaned up, exiting.")
-    sys.exit(0)
-
-# Callback function for power cut event
-def power_cut_callback():
-    logging.info("Power cut detected. Turning off screen and waiting for 9 minutes before shutdown...")
+# Shutdown function
+def shutdown_system():
     try:
-        # Turn off the screen
-        subprocess.run(turn_off_screen_cmd, shell=True, check=True)
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Failed to turn off the screen: {e}")
-
-    for _ in range(540):  # 9 minutes (540 * 1 second)
-        time.sleep(1)  # Sleep for 1 second
-        if GPIO.input(gpio_pin) == 1:
-            logging.info("Power restored during waiting period. Canceling shutdown.")
-            return
-
-    logging.info("Power still cut. Initiating shutdown.")
-    try:
+        logging.info("Power still cut. Initiating shutdown.")
         subprocess.run(["sudo", "halt"], check=True)
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to halt the system: {e}")
 
-# Callback function for power restore event
-def power_restore_callback():
-    logging.info("Power restored. Turning on screen...")
+# Function to handle the edge event types
+def edge_type_str(event):
+    """Return the edge type as a string."""
+    if event.event_type is event.Type.RISING_EDGE:
+        return "Rising"
+    if event.event_type is event.Type.FALLING_EDGE:
+        return "Falling"
+    return "Unknown"
+
+
+def watch_line_value(chip_path, line_offset, shutdown_delay=30):
+    """Watch a specific GPIO pin for edge events and run commands based on the event."""
+    # Assume a button connecting the pin to ground,
+    # so pull it up and provide some debounce.
+    with gpiod.request_lines(
+        chip_path,
+        consumer="watch-line-value",
+        config={
+            line_offset: gpiod.LineSettings(
+                edge_detection=Edge.BOTH,  # Detect both rising and falling edges
+                bias=Bias.PULL_UP,         # Enable pull-up resistor
+                debounce_period=timedelta(milliseconds=10),  # Debounce
+            )
+        },
+    ) as request:
+        timer_thread = None  # Initialize the timer thread variable
+        while True:
+            # Blocks until at least one event is available
+            for event in request.read_edge_events():
+                edge_type = edge_type_str(event)
+                logging.info(f"Edge detected: {edge_type} on GPIO pin {event.line_offset} event #{event.line_seqno}")
+                
+                # Falling edge: turn off the screen and start the shutdown timer
+                if edge_type == "Falling":
+                    logging.info("Executing Turn Off Screen command...")
+                    try:
+                        subprocess.run(turn_off_screen_cmd, shell=True, check=True)
+                    except subprocess.CalledProcessError as e:
+                        logging.error(f"Failed to execute Turn Off Screen command: {e}")
+                    
+                    # Start a timer to shut down the system after `shutdown_delay` seconds
+                    if timer_thread is None or not timer_thread.is_alive():
+                        timer_thread = threading.Timer(shutdown_delay, shutdown_system)
+                        timer_thread.start()
+                    else:
+                        logging.info("Timer is already running.")
+                
+                # Rising edge: turn on the screen and cancel the shutdown timer if it exists
+                elif edge_type == "Rising":
+                    logging.info("Executing Turn On Screen command...")
+                    try:
+                        subprocess.run(turn_on_screen_cmd, shell=True, check=True)
+                        subprocess.run("loginctl unlock-session c1", shell=True, check=True)
+                        # Cancel the shutdown timer if the power is restored
+                        if timer_thread and timer_thread.is_alive():
+                            timer_thread.cancel()
+                            logging.info("Shutdown timer cancelled due to power restoration.")
+                    except subprocess.CalledProcessError as e:
+                        logging.error(f"Failed to execute Turn On Screen command: {e}")
+
+
+if __name__ == "__main__":
     try:
-        # Wake up the screen
-        subprocess.run(turn_on_screen_cmd, shell=True, check=True)
-        # Unlock the session
-        subprocess.run("loginctl unlock-session c1", shell=True, check=True)
-
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Failed to turn on the screen: {e}")
-
-# Setup GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(gpio_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-# Register signal handlers for SIGTERM and SIGINT
-signal.signal(signal.SIGTERM, cleanup_and_exit)
-signal.signal(signal.SIGINT, cleanup_and_exit)
-
-# Initialize previous state
-prev_state = GPIO.input(gpio_pin)
-logging.info(f"Initial GPIO state: {prev_state}")
-
-logging.info("Waiting for power cut or restore...")
-
-try:
-    while True:
-        # Read the state of the pin
-        current_state = GPIO.input(gpio_pin)
-        if current_state != prev_state:
-            logging.info(f"GPIO state changed: {current_state}")
-            if current_state == 0:
-                power_cut_callback()
-            else:
-                power_restore_callback()
-            prev_state = current_state  # Update previous state
-        # Wait for a short period before checking again
-        time.sleep(1)
-
-except KeyboardInterrupt:
-    cleanup_and_exit(signal.SIGINT, None)
-except Exception as e:
-    logging.error(f"An error occurred: {e}")
-
-finally:
-    GPIO.cleanup()
-    logging.info("GPIO cleaned up and script terminated.")
+        # Monitor GPIO pin 26 on chip 0 (change to your pin if needed)
+        watch_line_value("/dev/gpiochip0", 26, shutdown_delay=540)  # 9 minutes before shutdown
+    except OSError as ex:
+        print(ex, "\nCustomize the example configuration to suit your situation")
 
