@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Name=Backlight
+Name[de]=Backlight
+Name[fr]=Backlight
+Comment=Backlight control
+Exec=/usr/local/bin/7H_Backlight
+Icon=/home/user/Pictures/brightness.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GTK;Utility;
+GenericName=Backlight Bright
+GenericName[de]=Backlight Bright
+X-Nemo-Application-Type=no-invoker

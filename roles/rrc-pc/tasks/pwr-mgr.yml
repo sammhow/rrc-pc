@@ -9,9 +9,12 @@
     src: pwr-cut-monitor
     dest: /etc/init.d/
     mode: 0755
+#- name: Enable the power management
+#  ansible.builtin.sysvinit:
+#      name: pwr-cut-monitor
+#      state: started
+#      enabled: yes
+#      runlevels: async
 - name: Enable the power management
-  ansible.builtin.sysvinit:
-      name: pwr-cut-monitor
-      state: started
-      enabled: yes
-      runlevels: async
+  command:
+    cmd: rc-update add pwr-cut-monitor

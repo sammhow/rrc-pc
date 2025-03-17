@@ -24,5 +24,8 @@
   shell: |
     rc-update add networking async
     rc-update add wpa_supplicant async
-    rc-update add ntpd async
   ignore_errors: True    
+
+- name: enable the auto-dimmer
+  command:
+    cmd: rc-update add dimmer 

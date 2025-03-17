@@ -1,0 +1,7 @@
+#!/sbin/openrc-run
+
+name="Screen_Dimmer"
+command="/usr/local/bin/dimmer.py"
+pidfile="/run/dimmer.pid"
+command_background=true
+

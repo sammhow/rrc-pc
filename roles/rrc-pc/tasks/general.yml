@@ -1,0 +1,33 @@
+---
+- name: install gcompat
+  apk:
+    name: gcompat
+    update_cache: true
+- name: copy gui dimmer
+  copy:
+    src: 7H_Backlight
+    dest: /usr/local/bin/7H_Backlight
+    mode: 0755
+- name: copy the command line dimmer
+  copy:
+    src: Raspi_USB_Backlight_nogui
+    dest: /usr/local/bin/Raspi_USB_Backlight_nogui
+    mode: 0755
+- name: copy the icon
+  copy:
+    src: brightness.png
+    dest: /home/user/Pictures/brightness.png
+- name: copy the desktop shortcut
+  copy:
+    src: backlight.desktop
+    dest: /usr/share/applications/backlight.desktop
+- name: copy auto dimmer
+  copy:
+    src: dimmer.py
+    dest: /usr/local/bin/dimmer.py
+    mode: 0755
+- name: auto dimmer service
+  copy:
+    src: dimmer
+    dest: /etc/init.d/dimmer
+    mode: 0755

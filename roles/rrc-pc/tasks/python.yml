@@ -1,0 +1,19 @@
+---
+- name: install gpiod
+  apk:
+    name: py3-libgpiod
+    update_cache: true
+
+- name: install pip
+  apk:
+    name: py3-pip
+   
+- name: Install astral
+  ansible.builtin.pip:
+    name: astral
+    extra_args: --break-system-packages
+
+- name: Install pygpsnmea
+  ansible.builtin.pip:
+    name: pynmeagps
+    extra_args: --break-system-packages

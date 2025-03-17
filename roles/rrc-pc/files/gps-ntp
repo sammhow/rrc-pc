@@ -9,7 +9,6 @@ command_user="root"
 
 # Dependencies: Ensure the GNSS-share socket and chronyd are available
 depend() {
-    need chronyd
     need gnss-share
     after gnss-share
 }

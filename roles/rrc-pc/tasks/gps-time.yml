@@ -9,9 +9,12 @@
     src: gps-ntp
     dest: /etc/init.d/
     mode: 0755
-- name: Enable the power management
-  ansible.builtin.sysvinit:
-      name: gps-ntp
-      state: started
-      enabled: yes
-      runlevels: default
+#- name: Enable the gps-ntp service
+#  ansible.builtin.sysvinit:
+#      name: gps-ntp
+#      state: started
+#      enabled: yes
+#      runlevels: default
+- name: Enable the gps-ntp
+  command:
+    cmd: rc-update add gps-ntp

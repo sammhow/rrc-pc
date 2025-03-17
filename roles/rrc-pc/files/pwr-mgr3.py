@@ -22,14 +22,14 @@ user = "user"
 dbus_send_path = "/usr/bin/dbus-send"
 
 # Define commands to turn the screen off and on
-turn_off_screen_cmd = f". /tmp/user_environment ; sudo -E -u {user} {dbus_send_path} --session --type=method_call --dest=org.kde.kglobalaccel /component/org_kde_powerdevil org.kde.kglobalaccel.Component.invokeShortcut string:'Turn Off Screen'"
-turn_on_screen_cmd = f". /tmp/user_environment ; sudo -E -u {user} {dbus_send_path} --session --type=method_call --dest=local.org_kde_powerdevil /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup"
+turn_off_screen_cmd = f". /tmp/user_environment ; doas -u {user} {dbus_send_path} --session --type=method_call --dest=org.kde.kglobalaccel /component/org_kde_powerdevil org.kde.kglobalaccel.Component.invokeShortcut string:'Turn Off Screen'"
+turn_on_screen_cmd = f". /tmp/user_environment ; doas -u {user} {dbus_send_path} --session --type=method_call --dest=local.org_kde_powerdevil /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup"
 
 # Shutdown function
 def shutdown_system():
     try:
         logging.info("Power still cut. Initiating shutdown.")
-        subprocess.run(["sudo", "halt"], check=True)
+        subprocess.run(["doas", "halt"], check=True)
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to halt the system: {e}")
 

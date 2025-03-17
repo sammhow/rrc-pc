@@ -8,10 +8,10 @@ group="geoclue"
 device_driver="stm_serial"
 
 # Path to GPS device to use
-device_path="/dev/ttyUSB_gps"
+device_path="/dev/ttyACM0"
 
 # Baud rate for GPS serial device
-device_baud_rate=4800
+device_baud_rate=9600
 
 # Directory to load/store almanac and ephemeris data
 agps_directory="/var/cache/gnss-share"

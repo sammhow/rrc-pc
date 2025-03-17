@@ -1,0 +1,6 @@
+- name: disable waydroid boot screen
+  lineinfile:
+    dest: /var/lib/waydroid/waydroid.cfg
+    search_string: 'nobootanimation'
+    insertafter: '^[properties]'
+    line: "debug.sf.nobootanimation = 1"
