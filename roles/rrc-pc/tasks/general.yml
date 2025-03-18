@@ -3,6 +3,9 @@
   apk:
     name: gcompat
     update_cache: true
+- name: install pytz
+  apk:
+    name: py3-tz
 - name: copy gui dimmer
   copy:
     src: 7H_Backlight

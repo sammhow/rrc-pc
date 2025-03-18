@@ -1,46 +1,47 @@
 #!/usr/bin/python
 import time
 import subprocess
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from astral import LocationInfo
 from astral.sun import sun
+import pytz  # Ensure you have this installed (pip install pytz)
 
 # Set your location (replace with your city or lat/lon)
 CITY_NAME = "Bodmin"
 REGION = "Cornwall"
-LATITUDE = -4.689610  # Replace with actual latitude
-LONGITUDE = 50.557838  # Replace with actual longitude
+LATITUDE = 50.557838
+LONGITUDE = -4.689610
 TIMEZONE = "Europe/London"
 
-# Define min and max brightness levels
-MIN_BRIGHTNESS = 1
-MAX_BRIGHTNESS = 10
+# Define brightness levels
+NIGHT_BRIGHTNESS = 1
+DAY_BRIGHTNESS = 10
 
 # How often to adjust brightness (seconds)
 INTERVAL = 60
 
-def get_sun_times():
-    """Get sunrise and sunset times for the location."""
-    location = LocationInfo(CITY_NAME, REGION, TIMEZONE, LATITUDE, LONGITUDE)
-    s = sun(location.observer, date=datetime.now())
+# Get the local timezone object
+local_tz = pytz.timezone(TIMEZONE)
 
-    return s["sunrise"], s["sunset"]
+def get_sun_times():
+    """Get sunrise and sunset times for the location in local timezone."""
+    location = LocationInfo(CITY_NAME, REGION, TIMEZONE, LATITUDE, LONGITUDE)
+    s = sun(location.observer, date=datetime.now(timezone.utc))
+
+    # Convert sunrise and sunset times to local timezone
+    sunrise_local = s["sunrise"].astimezone(local_tz)
+    sunset_local = s["sunset"].astimezone(local_tz)
+
+    return sunrise_local, sunset_local
 
 def calculate_brightness():
-    """Calculate the brightness level based on the time of day."""
+    """Determine whether it should be bright or dim."""
     sunrise, sunset = get_sun_times()
     
-    now = datetime.now(timezone.utc).astimezone()
-    if now < sunrise:  # Before sunrise, use minimum brightness, timezonestimezone(
-        return MIN_BRIGHTNESS
-    elif now > sunset:  # After sunset, use minimum brightness
-        return MIN_BRIGHTNESS
-    else:
-        # Scale brightness gradually between sunrise and sunset
-        elapsed = (now - sunrise).total_seconds()
-        total_daylight = (sunset - sunrise).total_seconds()
-        brightness = MIN_BRIGHTNESS + (MAX_BRIGHTNESS - MIN_BRIGHTNESS) * (elapsed / total_daylight)
-        return round(brightness)
+    # Get current time in local timezone
+    now = datetime.now(local_tz)
+
+    return DAY_BRIGHTNESS if sunrise <= now <= sunset else NIGHT_BRIGHTNESS
 
 def set_brightness(level):
     """Set the backlight brightness using the command-line tool."""
@@ -52,7 +53,7 @@ def main():
     while True:
         brightness = calculate_brightness()
         set_brightness(brightness)
-        print(f"Set brightness to {brightness}")
+        print(f"Set brightness to {brightness} at {datetime.now(local_tz).strftime('%H:%M:%S')}")
         time.sleep(INTERVAL)
 
 if __name__ == "__main__":
