@@ -6,15 +6,10 @@
     mode: 0755
 - name: copy the init script
   copy:
-    src: pwr-cut-monitor
-    dest: /etc/init.d/
-    mode: 0755
-#- name: Enable the power management
-#  ansible.builtin.sysvinit:
-#      name: pwr-cut-monitor
-#      state: started
-#      enabled: yes
-#      runlevels: async
+    src: pwr-mgr3.service
+    dest: /etc/systemd/system/pwr-mgr3.service
 - name: Enable the power management
-  command:
-    cmd: rc-update add pwr-cut-monitor
+  ansible.builtin.systemd:
+      name: pwr-mgr3.service
+      state: started
+      enabled: yes

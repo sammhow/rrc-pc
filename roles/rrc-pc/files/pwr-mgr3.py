@@ -66,7 +66,7 @@ def watch_line_value(chip_path, line_offset, shutdown_delay=30):
                 logging.info(f"Edge detected: {edge_type} on GPIO pin {event.line_offset} event #{event.line_seqno}")
                 
                 # Falling edge: turn off the screen and start the shutdown timer
-                if edge_type == "Falling":
+                if edge_type == "Rising":
                     logging.info("Executing Turn Off Screen command...")
                     try:
                         subprocess.run(turn_off_screen_cmd, shell=True, check=True)
@@ -81,7 +81,7 @@ def watch_line_value(chip_path, line_offset, shutdown_delay=30):
                         logging.info("Timer is already running.")
                 
                 # Rising edge: turn on the screen and cancel the shutdown timer if it exists
-                elif edge_type == "Rising":
+                elif edge_type == "Falling":
                     logging.info("Executing Turn On Screen command...")
                     try:
                         subprocess.run(turn_on_screen_cmd, shell=True, check=True)

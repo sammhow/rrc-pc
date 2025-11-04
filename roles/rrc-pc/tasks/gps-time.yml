@@ -4,17 +4,12 @@
     src: set_gps_time.py
     dest: /usr/local/bin/
     mode: 0755
-- name: copy the init script
+- name: copy the systemd unit
   copy:
-    src: gps-ntp
-    dest: /etc/init.d/
-    mode: 0755
-#- name: Enable the gps-ntp service
-#  ansible.builtin.sysvinit:
-#      name: gps-ntp
-#      state: started
-#      enabled: yes
-#      runlevels: default
-- name: Enable the gps-ntp
-  command:
-    cmd: rc-update add gps-ntp
+    src: gps-time.service 
+    dest: /etc/systemd/system/gps-time.service 
+- name: Enable the gps-ntp service
+  ansible.builtin.systemd:
+      name: gps-time.service
+      state: started
+      enabled: yes

@@ -1,0 +1,10 @@
+[Unit]
+Description=Set system time from GPS
+After=gnss-share.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/set_gps_time.py
+
+[Install]
+WantedBy=multi-user.target

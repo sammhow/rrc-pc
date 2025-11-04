@@ -1,0 +1,9 @@
+[Unit]
+Description=Power management script
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/pwr-mgr3.py
+
+[Install]
+WantedBy=graphical.target

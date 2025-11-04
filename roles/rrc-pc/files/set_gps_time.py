@@ -37,5 +37,5 @@ def set_system_time(timestamp):
 
 timestamp_generator = get_timedate()  # Initialize generator
 timestamp = next(timestamp_generator)  # Get the first timestamp
-#set_system_time(timestamp)  # Pass the correct value
+set_system_time(timestamp)  # Pass the correct value
 print(timestamp)

@@ -19,9 +19,16 @@
     path: /var/cache/gnss-share
     state: directory
 
-- name: and enable gnss
-  command:
-    cmd: "rc-update add gnss-share"
+- name: add a gnss systemd unit
+  copy:
+    src: gnss-share.service
+    dest: /etc/systemd/system/gnss-share.service
+
+- name: and enable it
+  systemd:
+    name: gnss-share.service
+    state: started
+    enabled: yes
 
 - name: geoclue config
   copy:
@@ -56,12 +63,6 @@
   copy:
     src: MyDesktop.json
     dest:  /home/user/Documents/MyDesktopLayout.json
-
-#- name: symlink modprobe for waydroid
-#  file:
-#    src: /sbin/modprobe
-#    dest: /usr/bin/modprobe
-#    state: link
 
 - name: copy bt autostart
   copy:

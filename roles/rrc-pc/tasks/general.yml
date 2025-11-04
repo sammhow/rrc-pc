@@ -6,6 +6,17 @@
 - name: install pytz
   apk:
     name: py3-tz
+- name: install waydroid
+  apk:
+    name:
+      - waydroid
+#      - waydroid-sensors
+- name: add my desktop layout
+  copy:
+    src: plasma-org.kde.plasma.mobileshell-appletsrc
+    dest: /home/user/.config/plasma-org.kde.plasma.mobileshell-appletsrc
+    owner: user
+    group: user
 - name: copy gui dimmer
   copy:
     src: 7H_Backlight
@@ -29,8 +40,8 @@
     src: dimmer.py
     dest: /usr/local/bin/dimmer.py
     mode: 0755
-- name: auto dimmer service
-  copy:
-    src: dimmer
-    dest: /etc/init.d/dimmer
-    mode: 0755
+#- name: auto dimmer service
+#  copy:
+#    src: dimmer
+#    dest: /etc/init.d/dimmer
+#    mode: 0755
