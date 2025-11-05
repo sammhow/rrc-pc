@@ -1,0 +1,21 @@
+boot_delay=0
+arm_control=0x200
+kernel=vmlinuz-rpi
+initramfs initramfs
+
+over_voltage=6
+arm_freq=2000
+gpu_freq=750
+
+dtoverlay=vc4-fkms-v3d-pi4
+
+dtoverlay=w1-gpio,gpiopin=27
+
+disable_overscan=1
+
+hdmi_cvt=1024 600 60 3 0 0 0
+
+hdmi_group=2
+hdmi_mode=87
+
+dtparam=krnbt=on

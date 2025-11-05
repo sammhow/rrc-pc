@@ -11,12 +11,19 @@
     name:
       - waydroid
 #      - waydroid-sensors
+
+- name: get the session uuid
+  ansible.builtin.shell: >
+    grep -Eo '^activityId=[0-9a-f-]+' /home/user/.config/plasma-org.kde.plasma.mobileshell-appletsrc | cut -d= -f2
+  register: activity_id
+
 - name: add my desktop layout
-  copy:
-    src: plasma-org.kde.plasma.mobileshell-appletsrc
+  template:
+    src: plasma-org.kde.plasma.mobileshell-appletsrc.j2
     dest: /home/user/.config/plasma-org.kde.plasma.mobileshell-appletsrc
     owner: user
     group: user
+
 - name: copy gui dimmer
   copy:
     src: 7H_Backlight
