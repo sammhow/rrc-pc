@@ -47,8 +47,12 @@
     src: dimmer.py
     dest: /usr/local/bin/dimmer.py
     mode: 0755
-#- name: auto dimmer service
-#  copy:
-#    src: dimmer
-#    dest: /etc/init.d/dimmer
-#    mode: 0755
+- name: auto dimmer service
+  copy:
+    src: dimmer
+    dest: /etc/systemd/system/dimmer.service
+- name: enable the dimmer service
+  systemd:
+    name: dimmer.service
+    state: running
+    enabled: true

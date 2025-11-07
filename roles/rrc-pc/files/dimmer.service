@@ -1,0 +1,10 @@
+[Unit]
+Description=Auto dim the screen based on the local time
+
+[Service]
+RuntimeDirectory=dimmer
+Type=simple
+ExecStart=/usr/local/bin/dimmer.py
+
+[Install]
+WantedBy=multi-user.target

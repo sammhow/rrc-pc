@@ -53,7 +53,9 @@ def main():
     while True:
         brightness = calculate_brightness()
         set_brightness(brightness)
-        print(f"Set brightness to {brightness} at {datetime.now(local_tz).strftime('%H:%M:%S')}")
+        #print(f"Set brightness to {brightness} at {datetime.now(local_tz).strftime('%H:%M:%S')}")
+        with open("/run/dimmer/brightness", "w") as f:                                           
+            f.write(f"{brightness}\n")
         time.sleep(INTERVAL)
 
 if __name__ == "__main__":

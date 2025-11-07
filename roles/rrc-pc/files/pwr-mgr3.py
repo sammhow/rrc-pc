@@ -10,6 +10,14 @@ import logging
 import time
 import threading
 
+# Get the brighness value
+def get_last_brightness(default=10):
+    try:
+        with open("/run/dimmer/brightness") as f:
+            return int(f.read().strip())
+    except Exception:
+        return default
+
 # Setup logging
 log_file_path = "/var/log/power_cut.log"
 # Clear the log file
@@ -22,8 +30,9 @@ user = "user"
 dbus_send_path = "/usr/bin/dbus-send"
 
 # Define commands to turn the screen off and on
-turn_off_screen_cmd = f". /tmp/user_environment ; doas -u {user} {dbus_send_path} --session --type=method_call --dest=org.kde.kglobalaccel /component/org_kde_powerdevil org.kde.kglobalaccel.Component.invokeShortcut string:'Turn Off Screen'"
-turn_on_screen_cmd = f". /tmp/user_environment ; doas -u {user} {dbus_send_path} --session --type=method_call --dest=local.org_kde_powerdevil /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup"
+brightness = get_last_brightness()
+turn_off_screen_cmd = f"/usr/local/bin/Raspi_USB_Backlight_nogui -b 0"
+turn_on_screen_cmd = f"/usr/local/bin/Raspi_USB_Backlight_nogui -b {brightness}"
 
 # Shutdown function
 def shutdown_system():
