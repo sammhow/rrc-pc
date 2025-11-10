@@ -49,10 +49,10 @@
     mode: 0755
 - name: auto dimmer service
   copy:
-    src: dimmer
+    src: dimmer.service
     dest: /etc/systemd/system/dimmer.service
 - name: enable the dimmer service
   systemd:
     name: dimmer.service
-    state: running
+    state: started
     enabled: true

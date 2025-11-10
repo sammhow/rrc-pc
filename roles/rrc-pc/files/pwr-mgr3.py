@@ -105,8 +105,8 @@ def watch_line_value(chip_path, line_offset, shutdown_delay=30):
 
 if __name__ == "__main__":
     try:
-        # Monitor GPIO pin 26 on chip 0 (change to your pin if needed)
-        watch_line_value("/dev/gpiochip0", 26, shutdown_delay=540)  # 9 minutes before shutdown
+        # Monitor GPIO pin 14 on chip 0 (change to your pin if needed)
+        watch_line_value("/dev/gpiochip0", 14, shutdown_delay=540)  # 9 minutes before shutdown
     except OSError as ex:
         print(ex, "\nCustomize the example configuration to suit your situation")
 

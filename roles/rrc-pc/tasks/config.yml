@@ -1,15 +1,13 @@
 ---
-#- name: add my boot config
-#  copy:
-#    src: cmdline.txt
-#    dest: /boot/config.txt
-#    mode: 0700
-#
-#- name: add the raspberry pi config
-#  copy:
-#    src: usercfg.txt
-#    dest: /boot/usercfg.txt
-#    mode: 0700
+- name: add my boot config
+  copy:
+    src: cmdline.txt
+    dest: /boot/cmdline.txt
+
+- name: add the raspberry pi config
+  copy:
+    src: usercfg.txt
+    dest: /boot/usercfg.txt
 
 - name: install konsole
   apk:
